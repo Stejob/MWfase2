@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!--chosen colors-->
+    <color name="primaryColor">#0091ea</color>
+    <color name="primaryLightColor">#64c1ff</color>
+    <color name="primaryDarkColor">#0064b7</color>
+    <color name="secondaryColor">#ff6f00</color>
+    <color name="secondaryLightColor">#ffa040</color>
+    <color name="secondaryDarkColor">#c43e00</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#000000</color>
+
+    <!-- instagram colors propositional 1-->
+    <color name="TimberFuelDark">#151515</color>
+    <color name="TimberFuelBright">#ffb340</color>
+
+    <color name="bayaExpressBlue">#6e95ef</color>
+    <color name="bayaExpressWhite">#ffffff</color>
+
+    <color name="MallorcaDark">#3c4390</color>
+    <color name="MallorcaBright">#f5dee0</color>
+
+    <color name="CeniusDark">#272622</color>
+    <color name="CeniusBright">#ffe047</color>
+
+    <color name="VegorConsultingDark">#db6946</color>
+    <color name="VegorConsultingBright">#ffeb61</color>
+
+    <!-- instagram colors propositional 2-->
+    <color name="c1Dark">#000</color>
+    <color name="c1Bright">#fadf00</color>
+
+    <color name="c2Dark">#191347</color>
+    <color name="c2Bright">#ed1c24</color>
+
+    <color name="c3Dark">#1e1c1e</color>
+    <color name="c3Bright">#e0136e</color>
+
+    <color name="c4Dark">#59bfa0</color>
+    <color name="c4Bright">#d099c5</color>
+
+    <color name="c5Dark">#182f41</color>
+    <color name="c5Bright">#f19372</color>
+
+
+
+</resources>
