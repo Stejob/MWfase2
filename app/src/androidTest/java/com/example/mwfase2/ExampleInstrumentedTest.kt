@@ -29,7 +29,7 @@ class ExampleInstrumentedTest {
     fun setUp() {
         composeTestRule.setContent {
             MWfase2Theme {
-                View()
+                //View()
             }
         }
     }

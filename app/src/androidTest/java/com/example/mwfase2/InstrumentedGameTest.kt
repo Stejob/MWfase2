@@ -24,19 +24,53 @@ class InstrumentedGameTest {
     fun setUp(){
         composeTestRule.setContent {
             MWfase2Theme {
-                View()
+                GameView()
             }
         }
     }
 
     @Test
     fun get_holes_index_per_click(){
-        composeTestRule.onNodeWithTag("hole position 0, 0").performClick()
-        composeTestRule.onNode(hasDrawable(R.drawable.mouse)).assertIsDisplayed()
+        for (row in 0..2){
+            for (col in 0..2){
+                composeTestRule
+                    .onNodeWithTag("circularHeaderImage tag $row, $col, resId = ${R.drawable.hole}")
+                    .performClick()
+                composeTestRule
+                    .onNodeWithTag("circularHeaderImage tag $row, $col, resId = ${R.drawable.mouse}")
+                    .assertIsDisplayed()
+                if (col % 2 == 0 && row == 2){
+                    composeTestRule
+                        .onNodeWithTag("circularHeaderImage tag ${row + 1}, $col, resId = ${R.drawable.hole}")
+                        .performClick()
+                    composeTestRule
+                        .onNodeWithTag("circularHeaderImage tag ${row + 1}, $col, resId = ${R.drawable.mouse}")
+                        .assertIsDisplayed()
+                }
+            }
+        }
     }
 
     fun hasDrawable (@DrawableRes res: Int): SemanticsMatcher =
         SemanticsMatcher.expectValue(
             SemanticsPropertyKey("My Image"), res
         )
+
+    @Test
+    fun has_correct_tag(){
+        for (row in 0..2) {
+            for (col in 0..2) {
+                composeTestRule
+                    .onNodeWithTag("circularHeaderImage tag $row, $col, resId = ${R.drawable.hole}")
+                    .assertExists()
+                if (col % 2 == 0 && row == 2){
+                    composeTestRule
+                        .onNodeWithTag("circularHeaderImage tag ${row + 1}, $col, resId = ${R.drawable.hole}")
+                        .assertExists()
+                }
+            }
+        }
+
+
+    }
 }

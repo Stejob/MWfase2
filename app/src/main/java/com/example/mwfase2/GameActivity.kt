@@ -1,27 +1,30 @@
 package com.example.mwfase2
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.mwfase2.ui.theme.MWfase2Theme
+import com.example.mwfase2.viewmodels.GameViewModel
 
 class MainActivity2 : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,7 +34,7 @@ class MainActivity2 : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    View()
+                    GameView()
                 }
             }
         }
@@ -39,46 +42,58 @@ class MainActivity2 : ComponentActivity() {
 }
 
 @Composable
-fun View() {
-/*    var image by remember {
-        mutableStateOf(0)
-    }
-    */
-    Box {
+fun GameView(viewModel: GameViewModel = GameViewModel()) {
+    Surface {
         Image(
             painter = painterResource(id = R.drawable.woodenbackground),
             contentDescription = "null",
             modifier = Modifier
-                .matchParentSize(),
+                .fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.1f))
+            Text(
+                text = stringResource(id = R.string.score, viewModel.score),
+                modifier = Modifier
+                    .weight(0.1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.h4,
+                color = MaterialTheme.colors.onSurface
+            )
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(1f),
+                    .weight(0.9f),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                for (i in 0..2) {
+
+                for (col in 0..2) {
                     Column(
                         modifier = Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        for (j in 0..2) {
-                            if (i % 2 != 0)
+                        for (row in 0..2) {
+                            if (col % 2 != 0 && row == 0)
                                 Spacer(modifier = Modifier.size(12.dp))
                             CircularHeaderImage(
-                                positionX = i,
-                                positionY = j,
-                                modifier = Modifier
-                                    .testTag("hole position $i, $j")
-                                    .clickable {
-
-                                    })
+                                gameViewModel = viewModel,
+                                row = row,
+                                col = col
+                            )
+                            if (col % 2 != 0 && row == 2)
+                                Spacer(modifier = Modifier.size(12.dp))
+                            if (col % 2 == 0 && row == 2)
+                                CircularHeaderImage(
+                                    gameViewModel = viewModel,
+                                    row = row + 1,
+                                    col = col
+                                )
                         }
                     }
                 }
@@ -87,10 +102,15 @@ fun View() {
     }
 }
 
+@Composable
+fun decOfImages() {
+
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
     MWfase2Theme {
-        View()
+        GameView()
     }
 }
