@@ -120,19 +120,23 @@ open class GameViewModel : ViewModel() {
         timer.start()
     }
 
+    private val job = job()
     private fun runGame() {
-        val a = viewModelScope.launch {
-            while (true) {
-                val delay = getRandomDelayBetweenShowTime()
-                val randImage = getRandomImage()
-                Log.e(TAG, "runGame: $delay")
-                delay(delay.milliseconds)
-                changePic(randImage)
-                delay(getRandomShowTime().milliseconds)
-                changePic(randImage)
-            }
+        viewModelScope.launch {
+            job
         }
+    }
 
+    private suspend fun job(){
+        while (true) {
+            val delay = getRandomDelayBetweenShowTime()
+            val randImage = getRandomImage()
+            Log.e(TAG, "runGame: $delay")
+            delay(delay.milliseconds)
+            changePic(randImage)
+            delay(getRandomShowTime().milliseconds)
+            changePic(randImage)
+        }
     }
 
     fun resetGame() {
@@ -143,4 +147,5 @@ open class GameViewModel : ViewModel() {
         _error.value = 0
         startGameTime()
     }
+
 }
