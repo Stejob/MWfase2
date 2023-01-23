@@ -37,6 +37,6 @@ class GameTest {
 
     @Test
     fun get_delay(){
-        assertw
+
     }
 }

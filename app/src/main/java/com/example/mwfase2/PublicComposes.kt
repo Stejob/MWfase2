@@ -16,8 +16,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mwfase2.viewmodels.GameViewModel
 import com.example.mwfase2.viewmodels.PublicComposeViewModel
 
@@ -31,23 +29,21 @@ fun CircularHeaderImage(
     col: Int
 ) {
     val viewModel by remember {
-        mutableStateOf(PublicComposeViewModel())
+        mutableStateOf(PublicComposeViewModel(gameViewModel))
     }
+    val imageState = viewModel.imageState.collectAsState()
 
     Column (modifier = modifier){
         Image(
-            painter = painterResource(id = viewModel.imageState),
+            painter = painterResource(id = imageState.value),// change in hence
             contentDescription = "My Image",
             contentScale = ContentScale.FillBounds,
             modifier = modifier
                 .size(76.dp)
                 .clip(CircleShape)
                 .border(2.dp, Color.Gray, CircleShape)
-                .clickable {
-                    gameViewModel.checkIfHit(viewModel.getImgState())
-                    Log.e(TAG, "CircularHeaderImage: ${viewModel.imageState}")
-                }
-                .testTag("circularHeaderImage tag $row, $col, resId = ${viewModel.imageState}")
+                .clickable { viewModel.checkClickResult() }
+                .testTag("circularHeaderImage tag $row, $col"/*, resId = ${viewModel.imageState}*/)
         )
     }
 }

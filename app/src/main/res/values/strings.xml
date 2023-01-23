@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">MWfase2</string>
     <string name="title_activity_main2">MainActivity2</string>
-    <string name="score">امتیاز شما: %d</string>
+    <string name="score">Score: %d</string>
+    <string name="error">Error: %d/3</string>
+    <string name="error_message_title">Sorry!</string>
+    <string name="win_message_title">Congratulations!</string>
+    <string name="error_message_body">Take your chance again…</string>
+    <string name="win_message_body">You have win…</string>
 </resources>
