@@ -120,10 +120,10 @@ open class GameViewModel : ViewModel() {
         timer.start()
     }
 
-    private val job = job()
+
     private fun runGame() {
         viewModelScope.launch {
-            job
+            job()
         }
     }
 
@@ -147,5 +147,4 @@ open class GameViewModel : ViewModel() {
         _error.value = 0
         startGameTime()
     }
-
 }
