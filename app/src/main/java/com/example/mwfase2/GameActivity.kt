@@ -14,10 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import com.example.mwfase2.ui.theme.MWfase2Theme
 import com.example.mwfase2.viewmodels.GameViewModel
 
@@ -29,8 +29,7 @@ class MainActivity2 : ComponentActivity() {
             MWfase2Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
                     GameView()
                 }
@@ -51,46 +50,58 @@ fun GameView(viewModel: GameViewModel = GameViewModel()) {
         Image(
             painter = painterResource(id = R.drawable.woodenbackground),
             contentDescription = "null",
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Spacer(modifier = Modifier.weight(0.05f))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.1f)
-                    .padding(16.dp)
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .background(color = Color.LightGray),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
-                    text = stringResource(id = R.string.score, scoreState.value),
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp),
+                    text = stringResource(id = R.string.score, scoreState.value, TOTAL_SCORE),
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.colors.onSurface
                 )
                 Text(
-                    text = stringResource(id = R.string.error, errorState.value),
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp),
+                    text = stringResource(id = R.string.error, errorState.value, TOTAL_ERROR),
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.colors.error
                 )
             }
-            LinearProgressIndicator(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                progress = timeLeft.value)
+                    .padding(start = 16.dp, end = 16.dp)
+                    .background(color = Color.LightGray),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Timer",
+                    modifier = Modifier.padding(start = 4.dp, end = 4.dp),
+                    fontWeight = FontWeight.Bold
+                )
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    progress = timeLeft.value,
+                    backgroundColor = Color.LightGray
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -104,21 +115,14 @@ fun GameView(viewModel: GameViewModel = GameViewModel()) {
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
                         for (row in 0..2) {
-                            if (col % 2 != 0 && row == 0)
-                                Spacer(modifier = Modifier.size(12.dp))
+                            if (col % 2 != 0 && row == 0) Spacer(modifier = Modifier.size(12.dp))
                             CircularHeaderImage(
-                                gameViewModel = viewModel,
-                                row = row,
-                                col = col
+                                gameViewModel = viewModel, row = row, col = col
                             )
-                            if (col % 2 != 0 && row == 2)
-                                Spacer(modifier = Modifier.size(12.dp))
-                            if (col % 2 == 0 && row == 2)
-                                CircularHeaderImage(
-                                    gameViewModel = viewModel,
-                                    row = row + 1,
-                                    col = col
-                                )
+                            if (col % 2 != 0 && row == 2) Spacer(modifier = Modifier.size(12.dp))
+                            if (col % 2 == 0 && row == 2) CircularHeaderImage(
+                                gameViewModel = viewModel, row = row + 1, col = col
+                            )
                         }
                     }
                 }
@@ -128,33 +132,28 @@ fun GameView(viewModel: GameViewModel = GameViewModel()) {
 }
 
 @Composable
-fun showAlertDialog(viewModel: GameViewModel, bo: Boolean){
+fun showAlertDialog(viewModel: GameViewModel, bo: Boolean) {
     val gameState = viewModel.gameState.collectAsState()
     if (bo) {
-        AlertDialog(
-            onDismissRequest = {
-                //viewModel.resetGame()
-            },
-            title = {
-                Text(text = stringResource(id = gameState.value.title))
-            },
-            text = {
-                Text(text = stringResource(id = gameState.value.message))
-            },
-            buttons = {
-                Row(
-                    modifier = Modifier.padding(all = 8.dp),
-                    horizontalArrangement = Arrangement.Center
+        AlertDialog(onDismissRequest = {
+            //viewModel.resetGame()
+        }, title = {
+            Text(text = stringResource(id = gameState.value.title))
+        }, text = {
+            Text(text = stringResource(id = gameState.value.message))
+        }, buttons = {
+            Row(
+                modifier = Modifier.padding(all = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { viewModel.resetGame() }
                 ) {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { viewModel.resetGame() }
-                    ) {
-                        Text("Play Again?")
-                    }
+                    Text("Play Again?")
                 }
             }
-        )
+        })
     }
 }
 

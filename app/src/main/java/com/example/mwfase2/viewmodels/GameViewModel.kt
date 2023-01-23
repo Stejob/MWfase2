@@ -4,28 +4,22 @@ package com.example.mwfase2.viewmodels
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.annotation.DrawableRes
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.StateObject
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mwfase2.R
-import com.example.mwfase2.showAlertDialog
+import com.example.mwfase2.*
 import com.example.mwfase2.states.GameState
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.runBlocking
 
 private const val TAG = "GameViewModel"
 
 open class GameViewModel : ViewModel() {
 
+    private var isTimeUp: Boolean = false
     private var _timeLeft = MutableStateFlow(0f)
     val timeLeft: StateFlow<Float> = _timeLeft
     private var _gameOver = MutableStateFlow(false)
@@ -40,27 +34,36 @@ open class GameViewModel : ViewModel() {
     val gameState: StateFlow<GameState> = _gameState
 
     private val _imageStateList = mutableListOf<MutableStateFlow<Int>>()
+    private lateinit var timer: CountDownTimer
+
+    @StringRes
+    private var errorMessage = R.string.error_message_body_error
 
     fun addImageStateList(imageState: MutableStateFlow<Int>) {
         _imageStateList.add(imageState)
     }
 
     fun incScore() {
-        if (_score.value >= 2) {
+        if (_score.value < TOTAL_SCORE - 1) {
+            _score.value++
+        } else{
             _score.value++
             _win.value = true
+            timer.cancel()
             getGameState()
-        } else
-            _score.value++
+        }
     }
 
     fun incError() {
-        if (_error.value >= 2) {
+        if (_error.value < TOTAL_ERROR - 1) {
+            _error.value++
+        } else {
+            errorMessage = R.string.error_message_body_error
             _error.value++
             _gameOver.value = true
+            timer.cancel()
             getGameState()
-        } else
-            _error.value++
+        }
     }
 
     private fun getGameState() {
@@ -70,7 +73,10 @@ open class GameViewModel : ViewModel() {
         }
         if (_gameOver.value) {
             _gameState.value.title = R.string.error_message_title
-            _gameState.value.message = R.string.error_message_body
+            if (isTimeUp)
+                _gameState.value.message = R.string.error_message_body_time_up
+            else
+                _gameState.value.message = R.string.error_message_body_error
         }
     }
 
@@ -86,11 +92,15 @@ open class GameViewModel : ViewModel() {
     }
 
     private fun getRandomDelayBetweenShowTime(): Long {
-        return (1000..3000).random().toLong()
+        return (MIN_DELAY_BETWEEN_SHOW_MOUSE..MAX_DELAY_BETWEEN_SHOW_MOUSE)
+            .random()
+            .toLong()
     }
 
     private fun getRandomShowTime(): Long {
-        return (400..800).random().toLong()
+        return (MIN_DELAY_FOR_SHOW_MOUSE..MAX_DELAY_FOR_SHOW_MOUSE)
+            .random()
+            .toLong()
     }
 
     fun checkIfReadyForRun() {
@@ -101,25 +111,19 @@ open class GameViewModel : ViewModel() {
     }
 
     private fun startGameTime() {
-        val timer = object : CountDownTimer(20000, 10) {
+        timer = object : CountDownTimer(TOTAL_TIME.toLong(), 10) {
             override fun onTick(millisUntilFinished: Long) {
-                Log.e(
-                    TAG,
-                    "onTick: ${millisUntilFinished / 20000.0}  ${
-                        (millisUntilFinished / 20000.0)
-                            .toFloat()
-                    }"
-                )
-                _timeLeft.value = (millisUntilFinished / 20000.0).toFloat()
+                _timeLeft.value = (millisUntilFinished / TOTAL_TIME).toFloat()
             }
 
             override fun onFinish() {
+                isTimeUp = true
                 _gameOver.value = true
+                getGameState()
             }
         }
         timer.start()
     }
-
 
     private fun runGame() {
         viewModelScope.launch {
@@ -127,7 +131,7 @@ open class GameViewModel : ViewModel() {
         }
     }
 
-    private suspend fun job(){
+    private suspend fun job() {
         while (true) {
             val delay = getRandomDelayBetweenShowTime()
             val randImage = getRandomImage()
@@ -143,6 +147,7 @@ open class GameViewModel : ViewModel() {
         _timeLeft.value = 0f
         _gameOver.value = false
         _win.value = false
+        isTimeUp = false
         _score.value = 0
         _error.value = 0
         startGameTime()
